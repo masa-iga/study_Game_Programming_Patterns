@@ -17,3 +17,41 @@ void Physics::updateEntity(Entity& entity) {
 		notify(entity, EVENT_START_FALL);
 	}
 }
+
+/*********************
+	4.2 実装
+*********************/
+// 4.2.1 Observer
+class Observer {
+public:
+	virtual ~Observer();
+	virtual void onNotify(const Entity& entity, Event event) = 0;
+};
+
+class Achievements : public Observer {
+public:
+	virtual void onNotify(const Entity& entity, Event event) {
+		switch (event) {
+			case EVENT_ENTITY_FELL:
+				if (entify.isHero() && heroIsOnBridege_) {
+					unlock(ACHIEVEMENT_FELL_OFF_BRIDGE);
+				}
+				break;
+			default: break;
+		}
+	}
+
+private:
+	void unlock(Achievement achievement) {
+		// まだ与えられていない場合は達成バッジを与える
+	}
+	bool heroIsOnBridege_;
+};
+
+
+// 4.2.2 Subject
+class Subject {
+private:
+	Observer* observers_[MAX_OBSERVERS];
+	int numObservers_;
+};
