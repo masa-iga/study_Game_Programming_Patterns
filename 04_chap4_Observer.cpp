@@ -51,7 +51,29 @@ private:
 
 // 4.2.2 Subject
 class Subject {
+public:
+	void addObserver(Observer* observer) {
+		// 配列に追加する
+	}
+
+	void removeObserver(Observer* observer) {
+		// 配列から削除する
+	}
+
+protected:
+	void notify(const Entity& eintity, Event event) {
+		for (int i=0; i < numObservers_; i++) {
+			observers_[i]->onNotify(entity, event);
+		}
+	}
+
 private:
 	Observer* observers_[MAX_OBSERVERS];
 	int numObservers_;
 };
+
+// 4.2.3 観測可能な物理エンジン
+class Physics : public Subject {
+public:
+	void updateEntity(Entity& entity);
+}
