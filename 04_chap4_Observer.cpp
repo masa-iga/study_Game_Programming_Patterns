@@ -1,5 +1,5 @@
 /*
-	Observer
+Observer
 	オブジェクト間に一対多の依存関係を定義する
 	これにより、あるオブジェクトが状態を変えた時に、依存関係にあるすべてのオブジェクトに
 	自動的にその変化が知らされ、必要な更新が行われるようにする
@@ -78,3 +78,68 @@ public:
 	void updateEntity(Entity& entity);
 }
 
+
+/*********************
+	4.4 「動的メモリ確保の処理が多すぎる」
+*********************/
+// 4.4.1 連結オブザーバ
+// これまでに見てきたコードでは、Subjectを監視している各ObserverへのポインタのリストをSubjectが持っている
+// クラスObserver自体は、そのリストへの参照を持ってはいない
+// Obsererにほんの小さな状態を持たせることにするならば、
+// サブジェクトが保持するリストを「オブザーバそのものを使って構成することで、
+// 割り当ての問題を解決できます。
+class Subject {
+public:
+	Subject() : head_(NULL)
+	{ }
+
+	// method definition
+
+private:
+	Observer* head_;
+};
+
+class Observer {
+	friend class Subject;
+
+public:
+	Observer() : next_(NULL)
+	{ }
+
+	// others
+
+private:
+	Observer* next_;
+};
+
+void Subject::addObserver(Observer* observer) {
+	observer->next_ = head_;
+	head_ = obserber;
+}
+
+void Subject::removeObserver(Observer* observer) {
+	if (head_ == observer) {
+		head_ = obserber->next_;
+		observer->next_ = NULL;
+		return;
+	}
+
+	Observer* current = head_;
+	while (current != NULL) {
+		if (current->next_ == observer) {
+			current->next_ = obserber->next_;
+			observer->next_ = NULL;
+			return;
+		}
+
+		current = current->next_;
+	}
+}
+
+void Subject::notify(const Entity& entity, Event event) {
+	Observer* observer = head_;
+	while (observer != NULL) {
+		observer->onNotify(entity, event);
+		observer = observer->next_;
+	}
+}
