@@ -80,7 +80,7 @@ private:
 }
 
 Monster* ghostPrototype = new Ghost(15, 3);
-Spawner* GhostSpawner = new Spawner(ghostPrototype);
+Spawner* ghostSpawner = new Spawner(ghostPrototype);
 
 /*
 	このパターンの良いところは、プロトタイプのクラスの複製を作成するだけでなく、状態も複製するというところです
@@ -94,3 +94,35 @@ Spawner* GhostSpawner = new Spawner(ghostPrototype);
 		１．　未だに各々の怪物クラスにclone()を実装する必要はある
 		２．　複製をshallowにするかdeepにするか	
 */
+
+/*
+	5.1.2	怪物生成関数
+*/
+/*
+	各Monster用に別々の生成クラスを作成するのではなく、次のように生成関数を作るのでもよいのです
+*/
+Monster* spawnGhost() {
+	return new Ghost();
+}
+
+/*
+	この場合、怪物生成クラスSpawnerは、関数へのポインタを１つ持つだけでよい
+*/
+typedef Monster* (*SpawnCallback)();
+
+class Spawner {
+public:
+	Spawner(SpawnCallback spawn)
+	: spawn_(spawn)
+	{}
+
+	Monser* spawnMonster() { return spawn_(); }
+
+private:
+	SpawnCallback spawn_;
+};
+
+/*
+	幽霊の生成関数を作るには、次のようにする
+*/
+Spanwer* ghostSpawner = new Spawner(spawnGhost);
