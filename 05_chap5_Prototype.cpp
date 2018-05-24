@@ -86,6 +86,8 @@ Spawner* ghostSpawner = new Spawner(ghostPrototype);
 	このパターンの良いところは、プロトタイプのクラスの複製を作成するだけでなく、状態も複製するというところです
 */
 
+
+
 /*
 	5.1.1 このパターンの働き
 */
@@ -94,6 +96,8 @@ Spawner* ghostSpawner = new Spawner(ghostPrototype);
 		１．　未だに各々の怪物クラスにclone()を実装する必要はある
 		２．　複製をshallowにするかdeepにするか	
 */
+
+
 
 /*
 	5.1.2	怪物生成関数
@@ -126,3 +130,30 @@ private:
 	幽霊の生成関数を作るには、次のようにする
 */
 Spanwer* ghostSpawner = new Spawner(spawnGhost);
+
+
+
+/*
+    5.1.3   Template
+ */
+/*
+    怪物生成クラスはある型のインスタンスを生成したいのですが、特定の怪物クラスを
+    コード内で明示したくありません。その問題の解決法として自然なのが型パラメータ
+*/
+class Spawner
+{
+public:
+    virtual ~Spawner() {};
+    virtual Monster* spawnMonser() = 0;
+}:
+
+template <class T>
+class SpawnerFor : public Spawner
+{
+public:
+    virtual Monser* spawnMonser() { return new T; }
+};
+
+Spawner* ghostSpawner = new SpawnerFor<Ghost>();
+Ghost* ghost = ghostSpanwer.spawnMonster();
+
